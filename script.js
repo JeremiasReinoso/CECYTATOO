@@ -6,6 +6,7 @@ const lightboxClose = document.getElementById("lightbox-close");
 const galleryItems = document.querySelectorAll(".gallery-item");
 const waFloat = document.getElementById("wa-float");
 const revealElements = document.querySelectorAll(".reveal");
+const zonaCards = document.querySelectorAll(".zona-card");
 
 function openLightbox(imageUrl, imageAlt) {
   lightboxImage.src = imageUrl;
@@ -63,3 +64,26 @@ const observer = new IntersectionObserver(
 );
 
 revealElements.forEach((element) => observer.observe(element));
+
+const zonaObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const card = entry.target;
+        const delay = Number(card.dataset.delay || 0);
+        window.setTimeout(() => {
+          card.classList.add("in-view");
+        }, delay);
+        zonaObserver.unobserve(card);
+      }
+    });
+  },
+  {
+    threshold: 0.22,
+  }
+);
+
+zonaCards.forEach((card, index) => {
+  card.dataset.delay = String(index * 90);
+  zonaObserver.observe(card);
+});
